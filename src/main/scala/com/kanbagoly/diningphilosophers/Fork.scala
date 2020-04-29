@@ -29,7 +29,7 @@ class Fork(context: ActorContext[Command]) extends AbstractBehavior[Command](con
       Behaviors.same
     case PutDown(replyTo) =>
       context.log.info("Put down request from {}!", replyTo.ref)
-      replyTo ! Response(true)
+      replyTo ! Response(false)
       Behaviors.same
   }
 

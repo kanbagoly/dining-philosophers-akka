@@ -18,7 +18,7 @@ class ForkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
       }
     }
     "not picked up" when {
-      "it is occupied" in {
+      "it is in use" in {
         val pickUpProbe = createTestProbe[Response]()
         val fork = spawn(Fork())
 

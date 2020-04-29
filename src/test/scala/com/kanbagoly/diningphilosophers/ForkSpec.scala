@@ -7,7 +7,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 class ForkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
 
   "Fork actor" must {
-    "picked up successfully" when {
+    "picked up" when {
       "it is free" in {
         val pickUpProbe = createTestProbe[Response]()
         val fork = spawn(Fork())
@@ -15,6 +15,19 @@ class ForkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
         fork ! PickUp(pickUpProbe.ref)
         val response = pickUpProbe.receiveMessage()
         response.successful should ===(true)
+      }
+    }
+    "not picked up" when {
+      "it is occupied" in {
+        val pickUpProbe = createTestProbe[Response]()
+        val fork = spawn(Fork())
+
+        fork ! PickUp(pickUpProbe.ref)
+        pickUpProbe.expectMessage(Response(successful = true))
+
+        fork ! PickUp(pickUpProbe.ref)
+        val response = pickUpProbe.receiveMessage()
+        response.successful should ===(false)
       }
     }
   }

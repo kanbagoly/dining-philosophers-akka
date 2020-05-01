@@ -9,6 +9,7 @@ object Fork {
   final case class PickUp(replyTo: ActorRef[Response]) extends Command
   final case class PutDown(replyTo: ActorRef[Response]) extends Command
 
+  // TODO: case object?
   final case class Response(successful: Boolean)
 
   def apply(): Behavior[Command] = Free

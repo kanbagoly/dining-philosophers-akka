@@ -1,6 +1,7 @@
 package com.kanbagoly.diningphilosophers
 
 import akka.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import com.kanbagoly.diningphilosophers.Fork.Response.{Successful, Unsuccessful}
 import com.kanbagoly.diningphilosophers.Fork.{PickUp, PutDown, Response}
 import org.scalatest.wordspec.AnyWordSpecLike
 
@@ -14,7 +15,7 @@ class ForkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
 
         fork ! PickUp(pickUpProbe.ref)
         val response = pickUpProbe.receiveMessage()
-        response.successful should ===(true)
+        response should ===(Successful)
       }
     }
     "not be able to picked up" when {
@@ -23,11 +24,11 @@ class ForkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
         val fork = spawn(Fork())
 
         fork ! PickUp(pickUpProbe.ref)
-        pickUpProbe.expectMessage(Response(successful = true))
+        pickUpProbe.expectMessage(Successful)
 
         fork ! PickUp(pickUpProbe.ref)
         val response = pickUpProbe.receiveMessage()
-        response.successful should ===(false)
+        response should ===(Unsuccessful)
       }
     }
     "able to put down" when {
@@ -37,11 +38,11 @@ class ForkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
         val fork = spawn(Fork())
 
         fork ! PickUp(pickUpProbe.ref)
-        pickUpProbe.expectMessage(Response(successful = true))
+        pickUpProbe.expectMessage(Successful)
 
         fork ! PutDown(putDownProbe.ref)
         val response = putDownProbe.receiveMessage()
-        response.successful should ===(true)
+        response should ===(Successful)
       }
     }
     "not be able to put down" when {
@@ -51,7 +52,7 @@ class ForkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
 
         fork ! PutDown(putDownProbe.ref)
         val response = putDownProbe.receiveMessage()
-        response.successful should ===(false)
+        response should ===(Unsuccessful)
       }
     }
   }

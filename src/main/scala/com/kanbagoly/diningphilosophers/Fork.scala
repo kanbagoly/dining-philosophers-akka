@@ -13,8 +13,8 @@ object Fork {
   object Response {
     def apply(successful: Boolean): Response =
       if (successful) Successful else Unsuccessful
-    case object Successful extends  Response
-    case object Unsuccessful extends  Response
+    case object Successful extends Response
+    case object Unsuccessful extends Response
   }
 
   def apply(): Behavior[Command] = Free

@@ -5,6 +5,7 @@ import com.kanbagoly.diningphilosophers.Fork.Response.{Successful, Unsuccessful}
 import com.kanbagoly.diningphilosophers.Fork.{PickUp, PutDown, Response}
 import org.scalatest.wordspec.AnyWordSpecLike
 
+// TODO: Try BehaviorsTestKit
 class ForkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
 
   "Fork actor" must {

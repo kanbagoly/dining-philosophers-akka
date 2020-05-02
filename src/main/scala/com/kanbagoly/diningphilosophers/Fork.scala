@@ -1,5 +1,7 @@
 package com.kanbagoly.diningphilosophers
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
 
@@ -32,5 +34,9 @@ object Fork {
       replyTo ! Response(used)
       Free
   }
+
+  private val NameCounter = new AtomicInteger(1)
+
+  def nextName(): String = s"fork-${NameCounter.getAndIncrement()}"
 
 }

@@ -4,6 +4,7 @@ import akka.actor.typed._
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 
 object Table {
+
   def apply(numberOfPhilosophers: Int): Behavior[Nothing] = {
     require(numberOfPhilosophers >= 2, "at least two philosophers need for the simulation")
     Behaviors.setup[Nothing] { context =>
@@ -24,12 +25,12 @@ object Table {
 
   private def behavior(numberOfPhilosophers: Int): Behavior[Nothing] =
     Behaviors.receiveSignal[Nothing] {
-      case (context, PostStop) =>
-        context.log.info("Eating philosophers simulation stopped")
-        Behaviors.same
       case (context, actor@Terminated(_)) =>
         context.log.info("Actor {} terminated", actor.ref.path.name)
         if (numberOfPhilosophers > 1) behavior(numberOfPhilosophers - 1) else Behaviors.stopped
+      case (context, PostStop) =>
+        context.log.info("Eating philosophers simulation stopped")
+        Behaviors.same
     }
 
 }

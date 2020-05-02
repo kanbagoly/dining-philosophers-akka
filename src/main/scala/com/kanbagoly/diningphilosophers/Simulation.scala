@@ -5,7 +5,7 @@ import akka.actor.typed.ActorSystem
 object Simulation {
 
   def main(args: Array[String]): Unit = {
-    ActorSystem[Nothing](Table(5), "eating-philosophers-system")
+    ActorSystem[Nothing](Table(numberOfPhilosophers = 5), "eating-philosophers-system")
   }
 
 }

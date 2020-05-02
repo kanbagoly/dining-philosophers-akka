@@ -1,26 +1,22 @@
 package com.kanbagoly.diningphilosophers
 
-import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed._
+import akka.actor.typed.scaladsl.Behaviors
 
 object Table {
   def apply(): Behavior[Nothing] =
-    Behaviors.setup[Nothing](context => new Table(context))
-}
+    Behaviors.setup[Nothing] { context =>
+      context.log.info("Eating philosophers simulation started")
 
-class Table(context: ActorContext[Nothing]) extends AbstractBehavior[Nothing](context) {
-  context.log.info("Eating philosophers simulation started")
+      val philosopher: ActorRef[Nothing] = context.spawn(Philosopher(), "philosopher")
+      context.watch(philosopher)
 
-  private val philosopher: ActorRef[Nothing] = context.spawn(Philosopher(), "philosopher")
-  context.watch(philosopher)
-
-  override def onMessage(msg: Nothing): Behavior[Nothing] = Behaviors.unhandled
-
-  override def onSignal: PartialFunction[Signal, Behavior[Nothing]] = {
-    case PostStop =>
-      context.log.info("Eating philosophers simulation stopped")
-      this
-    case Terminated(`philosopher`) =>
-      Behaviors.stopped
-  }
+      Behaviors.receiveSignal[Nothing] {
+        case (_, PostStop) =>
+          context.log.info("Eating philosophers simulation stopped")
+          Behaviors.same
+        case (_, Terminated(`philosopher`)) =>
+          Behaviors.stopped
+      }
+    }
 }

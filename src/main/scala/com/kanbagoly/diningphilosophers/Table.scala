@@ -8,7 +8,7 @@ object Table {
     Behaviors.setup[Nothing] { context =>
       context.log.info("Eating philosophers simulation started")
 
-      val philosopher: ActorRef[Nothing] = context.spawn(Philosopher(), "philosopher")
+      val philosopher = context.spawn(Philosopher(), "philosopher")
       context.watch(philosopher)
 
       Behaviors.receiveSignal[Nothing] {

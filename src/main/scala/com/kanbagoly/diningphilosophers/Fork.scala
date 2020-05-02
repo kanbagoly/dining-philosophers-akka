@@ -1,28 +1,36 @@
 package com.kanbagoly.diningphilosophers
 
-import akka.actor.typed.{ActorRef, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{ActorRef, Behavior}
 
-// TODO: Need Id (maybe just externally)
 object Fork {
 
   sealed trait Command
   final case class PickUp(replyTo: ActorRef[Response]) extends Command
   final case class PutDown(replyTo: ActorRef[Response]) extends Command
 
-  final case class Response(successful: Boolean)
+  sealed trait Response
+  object Response {
+    def apply(successful: Boolean): Response =
+      if (successful) Successful else Unsuccessful
+    final case object Successful extends Response
+    final case object Unsuccessful extends Response
+  }
 
-  def apply(): Behavior[Command] = Behaviors.receive { (context, message) =>
-    message match {
-      case PickUp(replyTo) =>
-        context.log.info("Pick up request from {}!", replyTo.ref)
-        replyTo ! Response(true)
-        Behaviors.same
-      case PutDown(replyTo) =>
-        context.log.info("Put down request from {}!", replyTo.ref)
-        replyTo ! Response(true)
-        Behaviors.same
-    }
+  def apply(): Behavior[Command] = Free
+
+  private val Free: Behavior[Command] = behavior(used = false)
+  private val Used: Behavior[Command] = behavior(used = true)
+
+  private def behavior(used: Boolean): Behavior[Command] = Behaviors.receive {
+    case (context, PickUp(replyTo)) =>
+      context.log.info("Pick up request from {}!", replyTo.ref)
+      replyTo ! Response(!used)
+      Used
+    case (context, PutDown(replyTo)) =>
+      context.log.info("Put down request from {}!", replyTo.ref)
+      replyTo ! Response(used)
+      Free
   }
 
 }

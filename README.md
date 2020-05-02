@@ -4,5 +4,5 @@ Solving the Dining philosophers problem
 with Akka's actors
 
 ## solution
-The philosophers avoid the deadlock by picking up the forks in ordered way
+The philosophers avoid deadlocks by picking up the forks in ordered way
 (the lower-numbered fork first).

@@ -2,6 +2,7 @@ package com.kanbagoly.diningphilosophers
 
 import akka.actor.typed._
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
+import com.kanbagoly.diningphilosophers.Philosopher.Eat
 
 object Table {
 
@@ -20,6 +21,7 @@ object Table {
     forkPairs.foreach { case (leftFork, rightFork) =>
       val philosopher = context.spawn(Philosopher(leftFork, rightFork), Philosopher.nextName())
       context.watch(philosopher)
+      philosopher ! Eat
     }
   }
 

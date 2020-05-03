@@ -17,11 +17,22 @@ object Philosopher {
   Behaviors.withTimers(timers => behavior(timers, leftFork, rightFork, numberOfTimesToEat)
   )}
 
-  private def behavior(factory: TimerScheduler[Command],
+  private def behavior(timers: TimerScheduler[Command],
                        leftFork: ActorRef[Fork.Command],
                        rightFork: ActorRef[Fork.Command],
-                       numberOfTimesToEat: Int): Behavior[Command] = {
-    Behaviors.stopped
+                       numberOfBites: Int): Behavior[Command] = {
+    Behaviors.receive {
+      case (context, Eat) if numberOfBites > 1 =>
+        context.log.info("Philosopher {} is eating. {} bites left.", context.self.path.name, numberOfBites - 1)
+        context.self ! Rest
+        behavior(timers, leftFork, rightFork, numberOfBites - 1)
+      case (context, Eat) =>
+        context.log.info("Philosopher {} finished eating. {} bites left.", context.self.path.name)
+        Behaviors.stopped
+      case (context, Rest) =>
+        context.self ! Eat
+        Behaviors.same
+    }
   }
 
   private val NameCounter = new AtomicInteger(1)

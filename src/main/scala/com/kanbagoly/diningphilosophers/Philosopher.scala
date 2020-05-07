@@ -5,6 +5,10 @@ import java.util.concurrent.atomic.AtomicInteger
 import akka.actor.typed.scaladsl.{Behaviors, TimerScheduler}
 import akka.actor.typed.{ActorRef, Behavior}
 
+import scala.concurrent.duration._
+import scala.util.Random
+
+
 object Philosopher {
 
   sealed trait Command
@@ -24,13 +28,14 @@ object Philosopher {
     Behaviors.receive {
       case (context, Eat) if numberOfBites > 1 =>
         context.log.info("Philosopher {} is eating. {} bites left.", context.self.path.name, numberOfBites - 1)
-        context.self ! Rest
+        timers.startSingleTimer(Rest, Random.nextInt(500).milliseconds)
         behavior(timers, leftFork, rightFork, numberOfBites - 1)
       case (context, Eat) =>
         context.log.info("Philosopher {} finished eating. {} bites left.", context.self.path.name)
         Behaviors.stopped
       case (context, Rest) =>
-        context.self ! Eat
+        context.log.info("Philosopher {} is resting.", context.self.path.name)
+        timers.startSingleTimer(Eat, Random.nextInt(500).milliseconds)
         Behaviors.same
     }
   }

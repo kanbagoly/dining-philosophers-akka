@@ -16,11 +16,8 @@ import scala.util.{Failure, Random, Success}
 object Philosopher {
 
   sealed trait Command
-
   final case object Eat extends Command
-
   final case object Rest extends Command
-
   private final case object PutForksDown extends Command
 
   private case class Setup(context: ActorContext[Philosopher.Command], timers: TimerScheduler[Command])

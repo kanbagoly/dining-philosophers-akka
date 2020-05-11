@@ -18,7 +18,7 @@ object Philosopher {
   sealed trait Command
   final case object Eat extends Command
   final case object Rest extends Command
-  private final case object PutForksDown extends Command
+  private final case object PutDownForks extends Command
 
   private case class Setup(context: ActorContext[Philosopher.Command], timers: TimerScheduler[Command])
 
@@ -39,11 +39,11 @@ object Philosopher {
       case Eat =>
         acquireForks(context, timers, forks)
         Behaviors.same
-      case PutForksDown if numberOfBites == 0 =>
+      case PutDownForks if numberOfBites == 0 =>
         forks.foreach(_ ! Fork.PutDown)
         context.log.info("Philosopher {} finished eating.", context.self.path.name)
         Behaviors.stopped
-      case PutForksDown =>
+      case PutDownForks =>
         forks.foreach(_ ! Fork.PutDown)
         context.log.info("Philosopher {} finished eating. {} bites left.", context.self.path.name, numberOfBites)
         context.self ! Rest
@@ -61,7 +61,7 @@ object Philosopher {
       notAcquired match {
         case Nil =>
           context.log.info("Philosopher {} started to eat.", context.self.path.name)
-          timers.startSingleTimer(PutForksDown, Random.nextInt(500).milliseconds)
+          timers.startSingleTimer(PutDownForks, Random.nextInt(500).milliseconds)
         case fork :: notAcquiredForks =>
           implicit val timeout: Timeout = 3.seconds
           implicit val system: ActorSystem[_] = context.system

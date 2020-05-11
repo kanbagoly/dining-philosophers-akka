@@ -1,7 +1,7 @@
 # dining-philosophers-akka
 Solving the Dining philosophers problem 
 (see: [Wikipedia](https://en.wikipedia.org/wiki/Dining_philosophers_problem "Dining philosophers problem"))
-with Akka's actors
+with Akka Typed.
 
 ## solution
 The philosophers avoid deadlocks by picking up the forks in ordered way

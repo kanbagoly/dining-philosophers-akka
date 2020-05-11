@@ -6,3 +6,8 @@ with Akka's actors
 ## solution
 The philosophers avoid deadlocks by picking up the forks in ordered way
 (the lower-numbered fork first).
+
+### todos
+ ☐ Provide test for Philosopher  
+ ☐ Make Philosopher cleaner  
+ ☐ Provide test for Table  

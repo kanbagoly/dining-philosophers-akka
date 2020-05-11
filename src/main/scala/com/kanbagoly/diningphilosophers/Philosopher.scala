@@ -17,7 +17,7 @@ object Philosopher {
 
   sealed trait Command
   final case object Eat extends Command
-  final case object Rest extends Command
+  private final case object Rest extends Command
   private final case object PutDownForks extends Command
 
   private case class Setup(context: ActorContext[Philosopher.Command], timers: TimerScheduler[Command])

@@ -32,7 +32,7 @@ class ForkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
         response should ===(Unsuccessful)
       }
     }
-    "able to put down" when {
+    "able to put down and picked up again" when {
       "it is in use" in {
         val pickUpProbe = createTestProbe[Response]()
         val putDownProbe = createTestProbe[Response]()
@@ -41,19 +41,10 @@ class ForkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
         fork ! PickUp(pickUpProbe.ref)
         pickUpProbe.expectMessage(Successful)
 
-        fork ! PutDown(putDownProbe.ref)
-        val response = putDownProbe.receiveMessage()
-        response should ===(Successful)
-      }
-    }
-    "not be able to put down" when {
-      "it is free" in {
-        val putDownProbe = createTestProbe[Response]()
-        val fork = spawn(Fork())
+        fork ! PutDown
 
-        fork ! PutDown(putDownProbe.ref)
-        val response = putDownProbe.receiveMessage()
-        response should ===(Unsuccessful)
+        fork ! PickUp(pickUpProbe.ref)
+        pickUpProbe.expectMessage(Successful)
       }
     }
   }

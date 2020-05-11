@@ -34,8 +34,8 @@ object Fork {
       Free
   }
 
-  private val NameCounter = new AtomicInteger(1)
+  private val nameCounter = new AtomicInteger(1)
 
-  def nextName(): String = s"fork-${NameCounter.getAndIncrement()}"
+  def nextName(): String = s"fork-${nameCounter.getAndIncrement()}"
 
 }

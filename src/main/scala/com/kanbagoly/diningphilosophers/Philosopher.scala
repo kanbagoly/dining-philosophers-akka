@@ -82,8 +82,8 @@ object Philosopher {
   private def orderForks(forks: ActorRef[Fork.Command]*): List[ActorRef[Fork.Command]] =
     forks.sortBy(_.path.name).toList
 
-  private val NameCounter = new AtomicInteger(1)
+  private val nameCounter = new AtomicInteger(1)
 
-  def nextName(): String = s"philosopher-${NameCounter.getAndIncrement()}"
+  def nextName(): String = s"philosopher-${nameCounter.getAndIncrement()}"
 
 }

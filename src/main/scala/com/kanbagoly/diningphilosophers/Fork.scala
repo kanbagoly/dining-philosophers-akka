@@ -1,5 +1,7 @@
 package com.kanbagoly.diningphilosophers
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
 
@@ -7,7 +9,7 @@ object Fork {
 
   sealed trait Command
   final case class PickUp(replyTo: ActorRef[Response]) extends Command
-  final case class PutDown(replyTo: ActorRef[Response]) extends Command
+  final case object PutDown extends Command
 
   sealed trait Response
   object Response {
@@ -24,13 +26,16 @@ object Fork {
 
   private def behavior(used: Boolean): Behavior[Command] = Behaviors.receive {
     case (context, PickUp(replyTo)) =>
-      context.log.info("Pick up request from {}!", replyTo.ref)
+      context.log.info("Pick up request from {}!", replyTo.path.name)
       replyTo ! Response(!used)
       Used
-    case (context, PutDown(replyTo)) =>
-      context.log.info("Put down request from {}!", replyTo.ref)
-      replyTo ! Response(used)
+    case (context, PutDown) =>
+      context.log.info("Put down request received!")
       Free
   }
+
+  private val NameCounter = new AtomicInteger(1)
+
+  def nextName(): String = s"fork-${NameCounter.getAndIncrement()}"
 
 }
